@@ -21,27 +21,9 @@ README.md
 .gitignore
 ```
 
-`.build/` 和 `dist/` 是构建时临时目录，不要上传；已经写进 `.gitignore`。
-
-## 第一次使用
-
-1. 新建公开仓库 `OpenList-fnOS`。
-2. 上传本仓库模板文件。
-3. 如果网页上传隐藏 `.github`，在 GitHub 使用 **Add file → Create new file**，文件名输入：
-   `.github/workflows/build-openlist-fpk.yml`
-4. Settings → Actions → General → Workflow permissions → 选择 **Read and write permissions** → Save。
-5. Actions → **Build OpenList fnOS FPK** → Run workflow。
-6. `version` 留空会自动使用上游最新正式 Release。
-
 ## 自动检测
 
-定时任务：
-
-```yaml
-- cron: "17 1 * * *"
-```
-
-即每天一次，约北京时间 09:17。
+每天一次，约北京时间 09:17。
 
 ## 版本说明
 

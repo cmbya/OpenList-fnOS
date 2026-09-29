@@ -1,6 +1,12 @@
 name: Build OpenList fnOS FPK
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - package-template/manifest
+      - scripts/build_fpk.sh
+      - .github/workflows/build-openlist-fpk.yml
   workflow_dispatch:
     inputs:
       version:
@@ -37,14 +43,11 @@ jobs:
             TAG="$(gh api repos/OpenListTeam/OpenList/releases/latest --jq '.tag_name')"
           fi
           VERSION="${TAG#v}"
-          PACK_REV="$(tr -d '[:space:]' < PACK_REV)"
-          RELEASE_TAG="fnos-${TAG}-${PACK_REV}"
+          RELEASE_TAG="fnos-${TAG}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "pack_rev=$PACK_REV" >> "$GITHUB_OUTPUT"
           echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "OpenList 上游: $TAG"
-          echo "fnOS 封装: $PACK_REV"
 
       - name: 检查是否已经发布
         id: existing
@@ -86,7 +89,7 @@ jobs:
         if: steps.existing.outputs.exists != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: OpenList-${{ steps.version.outputs.version }}-${{ steps.version.outputs.pack_rev }}-fnOS-x86
+          name: OpenList-${{ steps.version.outputs.version }}-fnOS-x86
           path: |
             dist/*.fpk
             dist/SHA256SUMS.txt
@@ -99,13 +102,11 @@ jobs:
           RELEASE_TAG: ${{ steps.version.outputs.release_tag }}
           UPSTREAM_TAG: ${{ steps.version.outputs.tag }}
           VERSION: ${{ steps.version.outputs.version }}
-          PACK_REV: ${{ steps.version.outputs.pack_rev }}
         run: |
           cat > /tmp/release-notes.md <<EOF2
           根据 OpenList 上游正式 Release **${UPSTREAM_TAG}** 自动生成 fnOS x86 原生 FPK。
 
           - 上游版本：${UPSTREAM_TAG}
-          - fnOS 封装：${PACK_REV}
           - 架构：x86 / amd64
           - Web 端口：5244
           - Docker：不使用
@@ -117,6 +118,6 @@ jobs:
 
           gh release create "$RELEASE_TAG" \
             dist/*.fpk dist/SHA256SUMS.txt \
-            --title "OpenList ${VERSION} fnOS x86 (${PACK_REV})" \
+            --title "OpenList ${VERSION} fnOS x86" \
             --notes-file /tmp/release-notes.md \
             --prerelease

@@ -4,7 +4,6 @@
 
 - 不使用 Docker
 - 默认端口：5244
-- 当前 fnOS 封装版本：见 `PACK_REV`
 - GitHub Actions 每 24 小时检查一次上游最新正式 Release
 - 发现新版本后自动生成 FPK，并创建 GitHub Pre-release
 - 支持 Actions 页面手动指定版本构建
@@ -16,7 +15,6 @@
 .github/workflows/build-openlist-fpk.yml
 package-template/
 scripts/build_fpk.sh
-PACK_REV
 README.md
 .gitignore
 ```
@@ -25,14 +23,8 @@ README.md
 
 每天一次，约北京时间 09:17。
 
-## 版本说明
+## 上游版本与旧包迁移
 
-例如：
+新 FPK 的 manifest、文件名和 Release tag 直接使用上游版本 `4.2.6`，不再添加封装修订号。同一个上游版本只发布一次，不能静默替换同版本 FPK。
 
-```text
-OpenList_4.2.5_native1_fnOS_x86.fpk
-```
-
-其中 `4.2.5` 是 OpenList 上游版本，`native1` 是 fnOS 封装版本。
-
-如果以后只修改飞牛封装而上游版本没变，把 `PACK_REV` 从 `native1` 改为 `native2`，再手动 Run workflow 即可生成新的 FPK。
+FnDepot 先前索引的版本为 `4.2.6-native1`。已安装的旧包可能因版本号比较或安装来源无法自动升级；切换版本规则需要在设备上单独验证和迁移。
